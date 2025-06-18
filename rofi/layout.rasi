@@ -1,0 +1,53 @@
+window {
+  children: [ mainbox ];
+}
+
+mainbox {
+  orientation: vertical;
+
+  children: [ 
+    inputbar,
+    listview,
+    mode-switcher
+  ];
+}
+
+mainbox {
+  orientation: vertical;
+
+  children: [ 
+    inputbar,
+    listview,
+    mode-switcher
+  ];
+}
+
+inputbar {
+  orientation: horizontal;
+
+  children: [
+    textbox-prompt,
+    entry,
+    case-indicator,
+    num-filtered-rows,
+    num-rows
+  ]; 
+}
+
+textbox-prompt {
+  str: var(prompt, "Follow me...:");
+}
+
+entry {
+  placeholder: var(placeholder, "Type to input");
+}
+
+element {
+  orientation: horizontal;
+
+  children: [
+    element-prefix,
+    element-text
+  ];
+}
+

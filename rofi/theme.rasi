@@ -1,0 +1,111 @@
+configuration {
+  modes: [ drun ];
+  show: "drun";
+  font: "FiraCode NerdFont Regular 14px";
+}
+
+@theme  "layout.rasi"
+@import "colors.rasi"
+
+* {
+  prompt:       "Fly";
+  placeholder:  "Follow me...";
+}
+
+window {
+  width: 600px;
+
+  border: 4px solid;
+  border-color: @border-color;
+
+  location: center;
+  anchor:   center;
+
+  background-color: #333a3f;
+}
+
+case-indicator {
+  enabled: true;
+}
+
+entry {
+  text-color:         @foreground-normal-color;
+  placeholder-color:  @placeholder-color;
+}
+
+num-rows {
+  text-color: @foreground-normal-color;
+}
+
+num-filtered-rows {
+  text-color: @foreground-normal-color;
+}
+
+mode-switcher {
+  orientation: horizontal;
+  enabled: false;
+}
+
+inputbar {
+  spacing: 10px;
+  padding: 32px 64px;
+}
+
+listview {
+  scrollbar: false;
+
+  lines:    5;
+  columns:  2;
+  fixed-columns: false;
+
+  layout: vertical;
+  flow:   horizontal;
+
+  padding: 16px 32px 32px;
+}
+
+textbox-prompt {
+  text-color: @foreground-normal-color;
+}
+
+element {
+  margin:   6px;
+  spacing:  6px;
+}
+
+element-text {
+  expand: true;
+
+  text-color: @foreground-normal-color;
+}
+
+element-prefix {
+  expand: false;
+
+  width:    6px;
+  padding:  6px;
+
+  background-color: transparent;
+}
+
+element-prefix selected.active {
+  border: 2px;
+
+  border-color:     @selected-color;
+  background-color: @selected-color;
+}
+
+element-prefix selected.normal {
+  border: 2px;
+
+  border-color:     @selected-color;
+  background-color: @selected-color;
+}
+
+element-prefix selected.urgent {
+  border: 2px;
+
+  border-color:     @selected-color;
+  background-color: @selected-color;
+}
+

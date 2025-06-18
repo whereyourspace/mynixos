@@ -1,0 +1,160 @@
+//@theme  "layout.rasi"
+@import "colors.rasi"
+
+window {
+  border: 4px solid;
+  border-color: #15181b;
+
+  location: center;
+  anchor: center;
+
+  background-color: #333a3f;
+
+  children: [ mainbox ];
+}
+
+mainbox {
+  orientation: vertical;
+
+  //children: [ 
+  //  inputbar,
+  //  listview,
+  //  mode-switcher
+  //];
+}
+
+inputbar {
+  orientation: horizontal;
+
+  children: [
+    prompt,
+    entry,
+    case-indicator,
+    num-filtered-rows,
+    num-rows
+  ]; 
+
+  spacing: 10px;
+  padding: 32px 64px;
+}
+
+prompt {
+  enabled: false;
+}
+
+entry {
+  placeholder: "Fly";
+}
+
+case-indicator {
+  enabled: true;
+}
+
+mode-switcher {
+  orientation: vertical;
+  enabled: false;
+}
+
+//listview {
+//  layout: vertical;
+//  flow: horizontal;
+//}
+
+scrollbar {
+}
+
+element {
+  orientation: horizontal;
+
+  children: [
+    element-prefix,
+    element-text
+  ];
+}
+
+//configuration {
+//  modes: [ combi ];
+//  combi-modes: [ run, ssh, window ];
+//  show: "combi";
+//}
+
+//window {
+//  //width: 600px;
+//  border: 4px;
+//  border-color: @border-color;
+//  //border-radius: 15;
+//  //transparency: "screenshot";
+//  //background-color: @transparent-color;
+//  //background-color: rgba(30, 30, 46, 0.9);
+//  //background-color: @transparent;
+//}
+
+entry {
+  placeholder: "Fly";
+  text-color: @foreground-normal-color;
+}
+
+num-rows {
+  text-color: @foreground-normal-color;
+}
+
+num-filtered-rows {
+  text-color: @foreground-normal-color;
+}
+
+mode-switcher {
+  orientation: vertical;
+  enabled: false;
+}
+
+listview {
+  //require-input: true;
+  scrollbar: false;
+  lines: 5;
+  columns: 2;
+  //fixed-height: false;
+  //fixed-columns: true;
+  //lines: 10;
+  //layout: vertical;
+  //flow: horizontal;
+  //padding: 0px 32px;
+}
+
+element {
+  margin: 6px;
+  spacing: 6px;
+}
+
+scrollbar {
+}
+
+element-text {
+  expand: true;
+  text-color: @foreground-normal-color;
+}
+
+element-prefix {
+  expand: false;
+  width: 6px;
+  background-color: transparent;
+  padding: 6px;
+}
+
+element-prefix selected.active {
+  border: 2px;
+  border-color: @selected-color;
+  background-color: @selected-color;
+}
+
+element-prefix selected.normal {
+  border: 2px;
+  border-color: @selected-color;
+  background-color: @selected-color;
+}
+
+element-prefix selected.urgent {
+  border: 2px;
+  border-color: @selected-color;
+  background-color: @selected-color;
+}
+

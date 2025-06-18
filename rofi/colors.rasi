@@ -1,0 +1,15 @@
+* {
+  //border-color:     #1C2023;
+  //background-color: #333A3F;
+  //selected-color:   #74A479;
+
+  //foreground-normal-color: #C7CCD1;
+  border-color:       #333A3F;
+  background-color:   #15181B;
+  selected-color:     #74A479;
+  transparent-color:  rgba(0,0,0,0);  
+  placeholder-color:  #333A3F;
+  
+  foreground-normal-color: #C7CCD1;
+}
+
