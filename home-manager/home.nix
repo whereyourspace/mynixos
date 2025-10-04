@@ -1,19 +1,22 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, username ? "user", ... }@args:
 {
+  #nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "obsidian" ];
   home = {
     stateVersion = "24.11";
-    username = "space";
-    homeDirectory = "/home/space";
+    username = username;
+    homeDirectory = "/home/${username}";
     packages = with pkgs; [
+      obsidian
       neofetch
       feh
-      btop
       ranger
       lxappearance
       rxvt-unicode-unwrapped
       font-awesome
       font-awesome_5
-      ( nerdfonts.override { fonts = [ "FiraCode" ]; } )
+      nerd-fonts.fira-code
+      appimage-run
     ];
   };
   fonts = {
@@ -170,7 +173,7 @@
         "${mod_alt}+h"  = "split h";
         "${mod_alt}+v"  = "split v";
 
-        "${mod}+w"  = "layout tabbled";
+        "${mod}+w"  = "layout tabbed";
         "${mod}+e"  = "layout toggle split";
         "${mod}+s"  = "layout stacking";
 
@@ -225,6 +228,8 @@
                 "gaps horizontal current toggle 100";
           "k" = "gaps outer current plus ${size}";
           "j" = "gaps outer current minus ${size}";
+          "h" = "gaps inner current plus ${size}";
+          "l" = "gaps inner current minus ${size}";
 
           "Return"  = "mode default";
           "Escape"  = "mode default";
@@ -509,6 +514,19 @@
   };
 
   programs = {
+    direnv = {
+      enable = true;
+      enableBashIntegration = true;
+      nix-direnv.enable = true;
+    };
+    bash = {
+      enable = true;
+      bashrcExtra = ''
+        if [ -f ~/.bashrc.extra ]; then
+          source ~/.bashrc.extra
+        fi
+      '';
+    };
     rofi = {
       enable = true;
 
@@ -682,21 +700,8 @@
       enable = true;
     };
     helix = {
-      enable    = true;
-      settings = {
-        editor = {
-          auto-completion = false;
-          auto-info       = false;
-          mouse           = false;
-
-          smart-tab = {
-            enable = false;
-          };
-          lsp = {
-            enable = false;
-          };
-        };
-      };
+      enable        = true;      
+      extraPackages = with pkgs; [ xsel ]; # copy to system clipboard
     };
     vim = {
       enable = true;

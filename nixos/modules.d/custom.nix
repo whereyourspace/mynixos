@@ -10,6 +10,8 @@ in
     ./video.nix
     ./console.nix
     ./network.nix
+    ./bluetooth.nix
+    ./steam.nix
   ];
 
   options = {

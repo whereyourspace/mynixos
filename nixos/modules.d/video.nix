@@ -13,109 +13,104 @@ in
       type = nullOr (submodule {
         options = {
           enable = mkEnableOption "desktop environment";
-          displayManager = mkOption {
-            type = nullOr (submodule {
-              options = {
-                use = mkOption {
-                  type = enum [ "sddm" "lightdm" ];                 
-                  description = "Display manager to use";
-                  default = "lightdm";
-                };
-                theme = mkOption {
-                  type = enum [ ];
-                  description = "Display manager theme to use";
-                };
-              };
-            });
-            default = null;
+          displayManagers = mkOption {
+            type = listOf (enum [ "sddm" "lightdm" "startx" ]);
+            default = [ ];
             description = ''
-              The display manager selection.
+              The display managers used.
             '';
           };
-          desktopManager = mkOption {
-            type = nullOr (submodule {
-              options = {
-                use = mkOption {
-                  type = enum [ ];
-                  description = ''
-                    The desktop manager to use
-                  '';
-                };
-              };
-            });
-            default = null;
+          desktopManagers = mkOption {
+            type = listOf (enum [ "plasma6" ]);
+            default = [ ];
             description = ''
-              The desktop manager selection.
+              The desktop managers used.
             '';
           };
-          windowManager = mkOption {
-            type = nullOr (submodule {
-              options = {
-                use = mkOption {
-                  type = enum [ "i3" ];
-                  description = ''
-                    The window manager to use
-                  '';
-                };
-              };
-            });
-            default = null;
+          windowManagers = mkOption {
+            type = listOf (enum [ "i3" ]);
+            default = [ ];
             description = ''
-              The window manager selection.
+              The window managers used.
             '';
           };
         };
       });
+      default = null;
+      description = ''
+        The desktop environment configuration.
+      '';
     };
     
   };
 
   # TODO implement automatic selection of the necessary drivers and packages
-  config = mkIf (custom.enable && custom.desktopEnvironment.enable) {
-    assertions = with custom.desktopEnvironment; [
-      {
-        #assertion = (windowManager != null) && (desktopManager != null);
-        assertion = (windowManager != null) || (desktopManager != null);
-        message = "Specify one of custom.desktopEnvironment.windowManager or custom.desktopEnvironment.desktopManager";
-      }
-    ];
-    hardware.graphics = mkIf custom.video.enable {
+  config = mkIf (custom.enable && custom.video.enable) {
+    hardware.graphics = {
       enable = true;
       extraPackages = with pkgs; [
-        xorg.xf86videovmware
+        # xorg.xf86videovmware
       ];
     };
-    services = mkIf custom.video.enable {
-      xserver = {
+
+    # TODO move GPU configuration to corresponding module
+    hardware.nvidia = {
+      open = false;
+      modesetting.enable = true;
+      powerManagement.enable = false;
+      powerManagement.finegrained = false;
+      nvidiaSettings = true;
+      prime = {
+        sync.enable = true;
+        intelBusId = "PCI:0:2:0";
+        nvidiaBusId = "PCI:1:0:0";
+      };
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
+    };
+    nixpkgs.config = {
+      allowUnfree = true;
+    };
+    services = with custom.desktopEnvironment; mkIf (custom.desktopEnvironment != null) {
+      xserver = mkIf enable {
         enable = true;
-        windowManager.i3.enable = (custom.desktopEnvironment.windowManager.use == "i3");
-        videoDrivers = [ "vmware" ];
-        displayManager = mkIf (custom.desktopEnvironment.displayManager != null) {
-          lightdm.enable = custom.desktopEnvironment.displayManager.use == "lightdm";
+        xkb = {
+          layout = "us,ru";
+          options = "grp:win_space_toggle";
+        };
+        windowManager = {
+          i3.enable = builtins.elem "i3" windowManagers;
+        };
+        videoDrivers = [ "nvidia" ];
+        displayManager = mkIf (displayManagers != [ ]) {
+          sessionCommands = "xrandr --output eDP-1-1 --auto --output HDMI-1-1 --primary --auto --right-of eDP-1-1";
+          lightdm.enable = builtins.elem "lightdm" displayManagers;
+          startx.enable = builtins.elem "startx" displayManagers;
         };
       };
-      displayManager =
-      let
-        sessionPrefix = "none";
-        sessionSuffix = if custom.desktopEnvironment.windowManager != null then custom.desktopEnvironment.windowManager.use else custom.desktopEnvironment.desktopManager.use;
-      in
-        {
-          sddm.enable = if custom.desktopEnvironment.displayManager != null then custom.desktopEnvironment.displayManager.use == "sddm" else false;
-          defaultSession = "${sessionPrefix}+${sessionSuffix}";
-        };
+      desktopManager = mkIf (desktopManagers != [ ]) {
+        plasma6.enable = builtins.elem "plasma6" desktopManagers;
+      };
+      displayManager = mkIf (displayManagers != [ ]) {
+        sddm.enable = builtins.elem "sddm" displayManagers;
+      };
     };
-    environment.sessionVariables = rec {
-      LD_LIBRARY_PATH = with pkgs; [
-        (
-          lib.makeLibraryPath [
-            libxkbcommon
-            xorg.libX11
-            xorg.libXcursor
-            xorg.libXi
-            xorg.libXrandr
-          ]
-        )
+    environment = with pkgs; with custom.desktopEnvironment; {
+      systemPackages = mkIf (builtins.elem "plasma6" desktopManagers) [
+        libsForQt5.qtstyleplugin-kvantum
       ];
+      sessionVariables = mkIf enable {
+        LD_LIBRARY_PATH = [
+          (
+            lib.makeLibraryPath [
+              libxkbcommon
+              xorg.libX11
+              xorg.libXcursor
+              xorg.libXi
+              xorg.libXrandr
+            ]
+          )
+        ];
+      };
     };
   };
 }

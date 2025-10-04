@@ -18,7 +18,7 @@ in
 
   config = mkIf custom.enable {
     users.users = {
-      "${custom.defaultUser}" = {
+      ${custom.defaultUser} = {
         isNormalUser = true;
         extraGroups = [ "wheel" ];
         packages = with pkgs; [ ];
