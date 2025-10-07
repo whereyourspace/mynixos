@@ -60,6 +60,8 @@
             fzf
             git
             podman
+            podman-compose
+            podman-desktop
             dive
             btop-cuda
             tree     
