@@ -33,6 +33,9 @@
   # Enable steam installation
   custom.steam.enable = true;
 
+  # Enable GnuPG installation
+  custom.gnupg.enable = true;
+
   # Enable bluetooth
   custom.bluetooth.enable = true;
   

@@ -12,6 +12,7 @@ in
     ./network.nix
     ./bluetooth.nix
     ./steam.nix
+    ./gnupg.nix
   ];
 
   options = {
